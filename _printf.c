@@ -7,6 +7,8 @@ specifier_t *get_specifier(char s)
 		{'c', print_char},
 		{'s', print_string},
 		{'%', print_percent},
+		{'d', print_int},
+		{'i', print_int},
 		{0, NULL}
 	};
 	int i = 0;
