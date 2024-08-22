@@ -1,0 +1,121 @@
+# NAME
+**_printf** - custom implementation of the standard printf function.
+
+# SYNOPSIS
+**#include** "main.h"
+
+**int _printf**(const char *format, ...);
+
+# DESCRIPTION
+**_printf** is a custom implementation of the standard C library function `printf`. This function produces output according to a specified format. It writes the output to the standard output (stdout) and returns the number of characters printed.
+
+The format string includes regular characters that are printed as they appear, as well as format specifiers, which define how subsequent arguments are converted for output.
+
+# SUPPORTED FORMAT SPECIFIERS
+The following format specifiers are supported by **_printf**:
+
+- **%c** - Prints a single character.
+- **%s** - Prints a string of characters.
+- **%%** - Prints a literal percent sign.
+- **%d**, **%i** - Prints a signed integer in decimal notation.
+
+# RETURN VALUE
+**_printf** returns the total number of characters printed (excluding the null byte used to end output to strings). If an error occurs, a negative number is returned.
+
+# FILES
+
+- **README.md**  
+  This file contains a comprehensive overview of the project, including a detailed description, usage instructions, and examples.
+
+- **_printf.c**  
+  Contains the main implementation of the `_printf` function. This file includes the core logic that processes the format string, identifies conversion specifiers, and invokes the appropriate functions to handle each specifier.
+
+  - **Functions**:
+    - **`int _printf(const char *format, ...);`**  
+      The main function of the file, `_printf`, processes the input format string and handles each conversion specifier. It uses a helper function, `get_specifier`, to identify the correct function to handle the conversion based on the specifier.
+
+    - **`specifier_t *get_specifier(char s);`**  
+      A static function that matches a format specifier character to its corresponding function. It returns a pointer to a `specifier_t` struct, which contains the format specifier and a function pointer to the handling function (e.g., `print_char`, `print_string`).
+
+  - **Details**:
+    - The `_printf` function starts by checking if the format string is valid. It then iterates through the string, identifying each format specifier preceded by a `%`. For valid specifiers, the function calls the corresponding handler function and accumulates the number of characters printed.
+    - If a specifier is invalid or not found, `_printf` simply prints the character as it is, ensuring that the output remains as close to the expected result as possible.
+    - The function returns the total number of characters printed, or `-1` if the format string is null.
+
+- **helpers.c**  
+  This file contains the helper functions used by `_printf` to handle various format specifiers. Each function is designed to process a specific type of input, such as a character, string, or integer, and print it to the standard output.
+
+  - **Functions**:
+    - **`int print_char(va_list args);`**  
+      Prints a single character. The character is extracted from the `va_list` and printed using the `write` system call. Returns the number of characters printed (always 1).
+
+    - **`int print_string(va_list args);`**  
+      Prints a string of characters. The string is extracted from the `va_list` and printed using the `write` system call. If the string is `NULL`, it prints `(null)`. Returns the number of characters printed.
+
+    - **`int print_percent(va_list args);`**  
+      Prints a percent sign (`%`). This function does not use the `va_list` but is included to handle the `%%` format specifier. Returns the number of characters printed (always 1).
+
+    - **`int print_int(va_list args);`**  
+      Prints an integer. The integer is extracted from the `va_list`, converted to a string, and then printed using the `write` system call. If the integer is negative, a minus sign is printed before the number. Returns the number of characters printed.
+
+  - **Details**:
+    - The functions in `helpers.c` are critical for `_printf` as they handle the actual data output for each format specifier. These functions ensure that the correct data is formatted and printed according to the specifier in the format string.
+    - The `print_int` function includes logic for handling negative numbers by printing a minus sign and converting the integer to an unsigned value before printing.
+
+- **helpers.h**  
+  The header file for the helper functions implemented in `helpers.c`. It declares the function prototypes for all helper functions used by `_printf`, enabling them to be called in other parts of the project.
+
+  - **Functions**:
+    - **`int print_char(va_list args);`**  
+      Declares the prototype for the function that prints a single character.
+
+    - **`int print_string(va_list args);`**  
+      Declares the prototype for the function that prints a string of characters.
+
+    - **`int print_percent(va_list args);`**  
+      Declares the prototype for the function that prints a percent sign (`%`).
+
+    - **`int print_int(va_list args);`**  
+      Declares the prototype for the function that prints an integer.
+
+  - **Details**:
+    - The `helpers.h` file includes the necessary function declarations for the helper functions used in the `_printf` implementation. This file is included in both `_printf.c` and other source files that require access to these helper functions.
+    - The file also includes the necessary standard library header `<stdarg.h>`, which is required for handling the variable argument list (`va_list`).
+
+- **main.c**  
+  This file contains the `main` function, serving as the entry point for the program. It is primarily used to test the functionality of the custom `_printf` function by comparing its output with the standard `printf` function.
+
+  - **Functions**:
+    - **`int main(void);`**  
+      The `main` function tests various features of the `_printf` implementation, including the printing of strings, characters, integers, unsigned integers, hexadecimal numbers, octal numbers, and memory addresses.
+
+  - **Details**:
+    - The `main` function compares the output and return values of `_printf` with the standard `printf` function to verify correctness. It tests different format specifiers like `%c`, `%s`, `%d`, `%i`, `%u`, `%o`, `%x`, `%X`, and `%p`, as well as handling the literal percent sign `%%`.
+    - Additionally, the `main` function attempts to handle an unknown format specifier (`%r`), which demonstrates the handling of unexpected or unsupported specifiers in the custom `_printf`.
+    - The tests include edge cases like printing the maximum value of an integer and a pointer address.
+
+- **main.h**  
+  The primary header file for the project. It includes essential definitions, declarations, and structures used across the project, particularly in the `_printf` function.
+
+  - **Contents**:
+    - **`int _printf(const char *format, ...);`**  
+      Declares the prototype for the custom `_printf` function, which mimics the behavior of the standard `printf` function.
+
+    - **`typedef struct specifier`**  
+      Defines the `specifier_t` structure, which is used to associate format specifier characters with corresponding handling functions. The structure includes:
+      - **`char fmt;`**  
+        A character representing the format specifier (e.g., `'c'` for character, `'s'` for string).
+      - **`int (*func)(va_list args);`**  
+        A function pointer to the handler function that processes the format specifier.
+
+  - **Details**:
+    - The `main.h` file is crucial for the entire project as it provides the necessary declarations and structure definitions that are used in `_printf.c` and other source files.
+    - It includes standard library headers such as `<stdarg.h>` for handling variable arguments and `<unistd.h>` for system calls like `write`.
+
+# AUTHORS
+Vonzell S. Carson 
+
+# SEE ALSO
+**printf**(3), **write**(2), **va_arg**(3), **stdarg**(3)
+
+---
