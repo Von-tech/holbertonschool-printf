@@ -84,4 +84,4 @@ man ./_printf.1
 ## Notes
 
 This project is part of a learning experience and is not intended for production use. The focus is on understanding how the `printf` function works under the hood and practicing C programming concepts.
-```
+
